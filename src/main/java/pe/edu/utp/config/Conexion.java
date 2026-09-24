@@ -8,7 +8,9 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * Entrega conexiones JDBC a MySQL leyendo la configuracion de db.properties.
+ * Entrega conexiones JDBC a MySQL. Usa las variables de entorno DB_HOST,
+ * DB_PORT, DB_NAME, DB_USER y DB_PASSWORD si existen (Docker); si no,
+ * lee db.properties (desarrollo local).
  */
 public final class Conexion {
 
@@ -27,9 +29,22 @@ public final class Conexion {
         } catch (IOException | ClassNotFoundException e) {
             throw new ExceptionInInitializerError(e);
         }
-        URL = props.getProperty("db.url");
-        USER = props.getProperty("db.user");
-        PASSWORD = props.getProperty("db.password", "");
+        String host = System.getenv("DB_HOST");
+        if (host != null && !host.isBlank()) {
+            URL = "jdbc:mysql://" + host + ":" + env("DB_PORT", "3306") + "/" + env("DB_NAME", "gestor_accesos")
+                    + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Lima&characterEncoding=UTF-8";
+            USER = env("DB_USER", "root");
+            PASSWORD = env("DB_PASSWORD", "");
+        } else {
+            URL = props.getProperty("db.url");
+            USER = props.getProperty("db.user");
+            PASSWORD = props.getProperty("db.password", "");
+        }
+    }
+
+    private static String env(String nombre, String porDefecto) {
+        String valor = System.getenv(nombre);
+        return valor == null || valor.isBlank() ? porDefecto : valor;
     }
 
     private Conexion() {

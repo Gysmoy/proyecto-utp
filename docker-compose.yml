@@ -1,0 +1,38 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8080"
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: gestor_accesos
+      DB_USER: gestor
+      DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en las variables de entorno}
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # MySQL sin puerto publicado: solo la app lo ve por la red interna
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: gestor_accesos
+      MYSQL_USER: gestor
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en las variables de entorno}
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      TZ: America/Lima
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/gestor_accesos.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u gestor -p$$MYSQL_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+volumes:
+  mysql_data:
