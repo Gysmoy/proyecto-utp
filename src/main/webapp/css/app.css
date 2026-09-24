@@ -1,0 +1,45 @@
+body {
+    background: #f3f4f6;
+    min-height: 100vh;
+}
+
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    border: 0;
+    border-radius: 1rem;
+}
+
+.auth-icon {
+    font-size: 2.5rem;
+    color: #f59e0b;
+}
+
+.password-mask {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    letter-spacing: .08em;
+    word-break: break-all;
+}
+
+.acceso-card {
+    border: 0;
+    border-radius: .75rem;
+    transition: box-shadow .15s;
+}
+
+.acceso-card:hover {
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .08) !important;
+}
+
+.tipo-badge {
+    font-weight: 500;
+}
