@@ -9,7 +9,7 @@ services:
       DB_PORT: 3306
       DB_NAME: gestor_accesos
       DB_USER: gestor
-      DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en las variables de entorno}
+      DB_PASSWORD: ${DB_PASSWORD:-203d0c79e548a8ace7b2d97f0731805f}
     depends_on:
       mysql:
         condition: service_healthy
@@ -21,7 +21,7 @@ services:
     environment:
       MYSQL_DATABASE: gestor_accesos
       MYSQL_USER: gestor
-      MYSQL_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en las variables de entorno}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-203d0c79e548a8ace7b2d97f0731805f}
       MYSQL_RANDOM_ROOT_PASSWORD: "yes"
       TZ: America/Lima
     volumes:
