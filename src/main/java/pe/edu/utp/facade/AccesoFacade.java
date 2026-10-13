@@ -57,9 +57,9 @@ public class AccesoFacade {
 
     /**
      * Crea (id == 0) o actualiza un acceso. Al editar, si password viene vacio
-     * se conserva la contrasena cifrada que ya existia.
+     * se conserva la contrasena cifrada que ya existia. Devuelve el id del acceso.
      */
-    public void guardar(int usuarioId, LlavesSesion llaves, int id, int tipoId, String titulo,
+    public int guardar(int usuarioId, LlavesSesion llaves, int id, int tipoId, String titulo,
             String url, String login, String password, String notas) throws ValidacionException {
         titulo = limpiar(titulo);
         url = limpiar(url);
@@ -115,10 +115,10 @@ public class AccesoFacade {
             }
 
             if (nuevo) {
-                accesoDAO.insertar(a);
-            } else {
-                accesoDAO.actualizar(a);
+                return accesoDAO.insertar(a);
             }
+            accesoDAO.actualizar(a);
+            return a.getId();
         } catch (SQLException e) {
             throw new AppException("Error al guardar acceso", e);
         } catch (GeneralSecurityException e) {
