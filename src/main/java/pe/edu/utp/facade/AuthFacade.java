@@ -1,5 +1,6 @@
 package pe.edu.utp.facade;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
@@ -20,6 +21,7 @@ import pe.edu.utp.security.RsaCipher;
  * Fachada de autenticacion: registro y login. Coordina el DAO de usuarios
  * con el hash BCrypt y la generacion/proteccion del par de llaves RSA.
  */
+@ApplicationScoped
 public class AuthFacade {
 
     private static final Pattern EMAIL = Pattern.compile("^[\\w.+-]+@[\\w-]+(\\.[\\w-]+)+$");

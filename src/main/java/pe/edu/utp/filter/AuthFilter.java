@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import pe.edu.utp.controller.LoginServlet;
+import pe.edu.utp.dto.UsuarioSesionDTO;
 import pe.edu.utp.security.LlavesSesion;
 
 /**
@@ -25,12 +25,15 @@ public class AuthFilter implements Filter {
         HttpSession session = request.getSession(false);
 
         boolean logueado = session != null
-                && session.getAttribute(LoginServlet.USUARIO) != null
+                && session.getAttribute(UsuarioSesionDTO.ATRIBUTO) != null
                 && session.getAttribute(LlavesSesion.ATRIBUTO) != null;
 
         if (!logueado) {
-            if ("fetch".equals(request.getHeader("X-Requested-With"))) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            if ("partial/ajax".equals(request.getHeader("Faces-Request"))) {
+                // Una peticion ajax de Faces solo entiende la redireccion dentro de un partial-response
+                response.setContentType("text/xml;charset=UTF-8");
+                response.getWriter().write("<?xml version=\"1.0\" encoding=\"UTF-8\"?><partial-response><redirect url=\""
+                        + request.getContextPath() + "/login?expirado=1\"/></partial-response>");
             } else {
                 response.sendRedirect(request.getContextPath() + "/login");
             }

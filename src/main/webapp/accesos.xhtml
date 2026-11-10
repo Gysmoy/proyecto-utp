@@ -1,0 +1,144 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/templates/app.xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Mis accesos</ui:define>
+
+    <ui:define name="contenido">
+        <h:outputScript name="js/accesos.js"/>
+
+        <h:form id="frmLista">
+            <div class="cabecera">
+                <div>
+                    <h1>Mis accesos</h1>
+                    <small class="ayuda">#{accesoBean.accesos.size()} registro(s)</small>
+                </div>
+                <p:commandButton id="btnNuevo" value="Nuevo acceso" icon="pi pi-plus" action="#{accesoBean.nuevo}"
+                                 process="@this" update=":dlgAcceso" resetValues="true"
+                                 oncomplete="PF('dlgAcceso').show()"/>
+            </div>
+
+            <div class="filtros">
+                <p:inputText id="q" value="#{accesoBean.q}" placeholder="Buscar por título, usuario o URL"/>
+                <p:selectOneMenu id="tipoFiltro" value="#{accesoBean.tipoFiltro}">
+                    <f:selectItem itemLabel="Todos los tipos" itemValue="#{null}" noSelectionOption="true"/>
+                    <f:selectItems value="#{accesoBean.tipos}" var="t" itemLabel="#{t.nombre}" itemValue="#{t.id}"/>
+                </p:selectOneMenu>
+                <p:commandButton id="btnFiltrar" value="Filtrar" icon="pi pi-search" action="#{accesoBean.buscar}"
+                                 process="@this q tipoFiltro" update="@form :avisos"
+                                 styleClass="ui-button-secondary"/>
+                <p:commandButton id="btnLimpiar" value="Limpiar" icon="pi pi-times" action="#{accesoBean.limpiarFiltros}"
+                                 process="@this" update="@form :avisos" resetValues="true"
+                                 styleClass="ui-button-flat ui-button-secondary"/>
+                <p:defaultCommand target="btnFiltrar"/>
+            </div>
+
+            <p:dataTable id="tabla" var="a" value="#{accesoBean.accesos}" rowKey="#{a.id}" reflow="true"
+                         paginator="true" rows="10" paginatorAlwaysVisible="false" paginatorPosition="bottom"
+                         emptyMessage="No hay accesos registrados.">
+                <p:column headerText="Acceso">
+                    <div class="acceso-titulo">#{a.titulo}</div>
+                    <h:outputLink rendered="#{not empty a.url}" value="#{a.url}" target="_blank"
+                                  rel="noopener noreferrer" styleClass="acceso-url">#{a.url}</h:outputLink>
+                    <div class="acceso-notas">#{a.notas}</div>
+                </p:column>
+
+                <p:column headerText="Tipo" style="width: 10rem">
+                    <p:tag value="#{a.tipoNombre}" severity="info"/>
+                </p:column>
+
+                <p:column headerText="Usuario" style="width: 18rem">
+                    <div class="dato-copiable">
+                        <span class="dato-texto">#{a.login}</span>
+                        <button type="button" class="boton-icono" title="Copiar usuario" data-texto="#{a.login}"
+                                onclick="copiarTexto(this)"><i class="pi pi-copy"></i></button>
+                    </div>
+                </p:column>
+
+                <p:column headerText="Contraseña" style="width: 18rem">
+                    <div class="dato-copiable">
+                        <span class="password-mask" id="pwd-#{a.id}">••••••••••</span>
+                        <p:commandButton icon="pi pi-eye" title="Ver contraseña" action="#{accesoBean.revelar(a.id)}"
+                                         process="@this" update=":avisos"
+                                         onstart="return !ocultarSiVisible(#{a.id})"
+                                         oncomplete="mostrarPassword(args, #{a.id})"
+                                         styleClass="rounded-button ui-button-flat ui-button-secondary js-ojo-#{a.id}"/>
+                        <p:commandButton icon="pi pi-copy" title="Copiar contraseña" action="#{accesoBean.revelar(a.id)}"
+                                         process="@this" update=":avisos"
+                                         oncomplete="copiarPassword(args)"
+                                         styleClass="rounded-button ui-button-flat ui-button-secondary"/>
+                    </div>
+                </p:column>
+
+                <p:column headerText="Acciones" style="width: 7rem">
+                    <p:commandButton icon="pi pi-pencil" title="Editar" action="#{accesoBean.editar(a.id)}"
+                                     process="@this" update=":dlgAcceso :avisos" resetValues="true"
+                                     styleClass="rounded-button ui-button-flat"/>
+                    <p:commandButton icon="pi pi-trash" title="Eliminar" action="#{accesoBean.eliminar(a.id)}"
+                                     process="@this" update="@form :avisos"
+                                     styleClass="rounded-button ui-button-flat ui-button-danger">
+                        <p:confirm header="Eliminar acceso" icon="pi pi-exclamation-triangle"
+                                   message="¿Seguro que deseas eliminar #{a.titulo}? Esta acción no se puede deshacer."/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+        <p:dialog id="dlgAcceso" widgetVar="dlgAcceso" modal="true" resizable="false" responsive="true" width="640"
+                  header="#{accesoBean.formulario.id == 0 ? 'Nuevo acceso' : 'Editar acceso'}">
+            <h:form id="frmAcceso" autocomplete="off">
+                <p:messages id="erroresForm" closable="false"/>
+
+                <div class="form-grid">
+                    <div class="campo col-2">
+                        <p:outputLabel for="titulo" value="Título"/>
+                        <p:inputText id="titulo" value="#{accesoBean.formulario.titulo}" required="true" maxlength="100"
+                                     requiredMessage="Ingresa un título." placeholder="Ej: Gmail personal"/>
+                    </div>
+                    <div class="campo">
+                        <p:outputLabel for="tipo" value="Tipo"/>
+                        <p:selectOneMenu id="tipo" value="#{accesoBean.formulario.tipoId}" required="true"
+                                         requiredMessage="Selecciona un tipo.">
+                            <f:selectItem itemLabel="Selecciona..." itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{accesoBean.tipos}" var="t" itemLabel="#{t.nombre}" itemValue="#{t.id}"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="campo col-3">
+                        <p:outputLabel for="url" value="URL (opcional)"/>
+                        <p:inputText id="url" value="#{accesoBean.formulario.url}" maxlength="255" placeholder="https://..."/>
+                    </div>
+                    <div class="campo col-15">
+                        <p:outputLabel for="login" value="Usuario / correo de la cuenta"/>
+                        <p:inputText id="login" value="#{accesoBean.formulario.login}" required="true" maxlength="150"
+                                     requiredMessage="Ingresa el usuario o correo de la cuenta."/>
+                    </div>
+                    <div class="campo col-15">
+                        <p:outputLabel for="clave" value="Contraseña"/>
+                        <div class="ui-inputgroup">
+                            <p:password id="clave" value="#{accesoBean.password}" redisplay="false" autocomplete="new-password"
+                                        placeholder="#{accesoBean.formulario.id == 0 ? '' : 'Dejar vacío para no cambiar'}"/>
+                            <p:commandButton id="verClave" type="button" icon="pi pi-eye" title="Mostrar"
+                                             onclick="alternarClave(); return false;" styleClass="ui-button-secondary"/>
+                            <p:commandButton id="generarClave" type="button" icon="pi pi-bolt" title="Generar contraseña segura"
+                                             onclick="generarClave(); return false;" styleClass="ui-button-secondary"/>
+                        </div>
+                        <small class="ayuda">Se guarda cifrada con tu llave pública RSA.</small>
+                    </div>
+                    <div class="campo col-3">
+                        <p:outputLabel for="notas" value="Notas (opcional)"/>
+                        <p:inputTextarea id="notas" value="#{accesoBean.formulario.notas}" rows="3" maxlength="2000" autoResize="false"/>
+                    </div>
+                </div>
+
+                <div class="dialogo-botones">
+                    <p:commandButton value="Cancelar" type="button" onclick="PF('dlgAcceso').hide()" styleClass="ui-button-flat ui-button-secondary"/>
+                    <p:commandButton id="btnGuardar" value="Guardar" icon="pi pi-save" action="#{accesoBean.guardar}"
+                                     process="@form" update="@form :frmLista :avisos"/>
+                </div>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es"
+      xmlns:f="jakarta.faces.core"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets">
+    <ui:insert name="metadata"/>
+    <h:head>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title><ui:insert name="titulo"/> - Gestor de Accesos</title>
+        <f:facet name="last">
+            <h:outputStylesheet name="css/app.css"/>
+        </f:facet>
+    </h:head>
+    <h:body styleClass="auth-body">
+        <div class="auth-wrapper">
+            <div class="auth-card">
+                <ui:insert name="contenido"/>
+            </div>
+        </div>
+    </h:body>
+</html>

@@ -9,6 +9,8 @@ public class UsuarioSesionDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final String ATRIBUTO = "usuario";
+
     private final int id;
     private final String nombre;
     private final String usuario;

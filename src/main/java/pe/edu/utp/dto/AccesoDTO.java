@@ -1,12 +1,15 @@
 package pe.edu.utp.dto;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * Acceso (cuenta) guardado por un usuario. La contrasena viaja siempre cifrada
  * con RSA en passwordEnc; solo se descifra cuando el usuario la pide ver.
  */
-public class AccesoDTO {
+public class AccesoDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private int id;
     private int usuarioId;

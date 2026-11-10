@@ -1,9 +1,13 @@
 package pe.edu.utp.dto;
 
+import java.io.Serializable;
+
 /**
  * Tipo de acceso: correo, red social, banco, servidor, etc.
  */
-public class TipoAccesoDTO {
+public class TipoAccesoDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private int id;
     private String nombre;

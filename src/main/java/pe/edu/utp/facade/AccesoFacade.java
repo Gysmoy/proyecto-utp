@@ -1,5 +1,6 @@
 package pe.edu.utp.facade;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.util.List;
@@ -15,8 +16,9 @@ import pe.edu.utp.security.RsaCipher;
 
 /**
  * Fachada del modulo de accesos: CRUD de cuentas y cifrado/descifrado RSA
- * de sus contrasenas. Los servlets solo hablan con esta clase.
+ * de sus contrasenas. Los managed beans y la API solo hablan con esta clase.
  */
+@ApplicationScoped
 public class AccesoFacade {
 
     private final AccesoDAO accesoDAO;

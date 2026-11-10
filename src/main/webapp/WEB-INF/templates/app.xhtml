@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es"
+      xmlns:f="jakarta.faces.core"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title><ui:insert name="titulo"/> - Gestor de Accesos</title>
+        <f:facet name="last">
+            <h:outputStylesheet name="css/app.css"/>
+        </f:facet>
+    </h:head>
+    <h:body>
+        <header class="barra">
+            <h:link outcome="/accesos" styleClass="marca">
+                <i class="pi pi-shield"></i> Gestor de Accesos
+            </h:link>
+            <h:form id="frmSesion" styleClass="barra-usuario">
+                <span class="barra-nombre"><i class="pi pi-user"></i> #{sesionBean.usuario.nombre}</span>
+                <p:commandButton value="Salir" icon="pi pi-sign-out" action="#{sesionBean.salir}" ajax="false"
+                                 styleClass="ui-button-outlined boton-claro"/>
+            </h:form>
+        </header>
+
+        <main class="contenedor">
+            <ui:insert name="contenido"/>
+        </main>
+
+        <p:growl id="avisos" widgetVar="avisos" globalOnly="true" life="3000"/>
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="380">
+            <p:commandButton value="Cancelar" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
+            <p:commandButton value="Eliminar" type="button" styleClass="ui-confirmdialog-yes ui-button-danger"/>
+        </p:confirmDialog>
+    </h:body>
+</html>

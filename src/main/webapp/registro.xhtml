@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/templates/auth.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="titulo">Registro</ui:define>
+
+    <ui:define name="contenido">
+        <div class="auth-titulo">
+            <i class="pi pi-user-plus auth-icon"></i>
+            <h1>Crear cuenta</h1>
+            <p>Tu contraseña protege tu llave privada: no la olvides, no se puede recuperar.</p>
+        </div>
+
+        <h:form id="frmRegistro">
+            <p:messages id="mensajes" closable="true"/>
+
+            <div class="campo">
+                <p:outputLabel for="nombre" value="Nombre completo" indicateRequired="false"/>
+                <p:inputText id="nombre" value="#{registroBean.nombre}" required="true" maxlength="100"
+                             requiredMessage="Ingresa tu nombre." autocomplete="name"/>
+            </div>
+            <div class="campo">
+                <p:outputLabel for="usuario" value="Usuario" indicateRequired="false"/>
+                <p:inputText id="usuario" value="#{registroBean.usuario}" required="true" maxlength="50"
+                             requiredMessage="Ingresa un usuario." autocomplete="username"/>
+            </div>
+            <div class="campo">
+                <p:outputLabel for="email" value="Correo" indicateRequired="false"/>
+                <p:inputText id="email" type="email" value="#{registroBean.email}" required="true" maxlength="120"
+                             requiredMessage="Ingresa tu correo." autocomplete="email"/>
+            </div>
+            <div class="campo">
+                <p:outputLabel for="password" value="Contraseña" indicateRequired="false"/>
+                <p:password id="password" value="#{registroBean.password}" required="true"
+                            requiredMessage="Ingresa una contraseña." autocomplete="new-password"/>
+                <small class="ayuda">Mínimo 8 caracteres.</small>
+            </div>
+            <div class="campo">
+                <p:outputLabel for="confirmar" value="Confirmar contraseña" indicateRequired="false"/>
+                <p:password id="confirmar" value="#{registroBean.confirmar}" required="true"
+                            requiredMessage="Confirma tu contraseña." autocomplete="new-password"/>
+            </div>
+
+            <p:commandButton id="registrarme" value="Registrarme" icon="pi pi-check-circle"
+                             action="#{registroBean.registrar}" ajax="false"
+                             styleClass="boton-ancho ui-button-success"/>
+        </h:form>
+
+        <p class="auth-pie">¿Ya tienes cuenta? <h:link outcome="/login" value="Inicia sesión"/></p>
+    </ui:define>
+</ui:composition>

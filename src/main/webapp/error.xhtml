@@ -1,0 +1,16 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/templates/auth.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets">
+
+    <ui:define name="titulo">Error</ui:define>
+
+    <ui:define name="contenido">
+        <div class="auth-titulo">
+            <i class="pi pi-exclamation-triangle auth-icon"></i>
+            <h1>Ocurrió un error</h1>
+            <p>No pudimos procesar tu solicitud. Intenta nuevamente.</p>
+        </div>
+        <p class="auth-pie"><h:link outcome="/login" value="Volver al inicio"/></p>
+    </ui:define>
+</ui:composition>
