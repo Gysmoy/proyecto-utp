@@ -1,25 +1,29 @@
 package pe.edu.utp.controller;
 
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
+import java.util.Map;
 import pe.edu.utp.dto.UsuarioSesionDTO;
+import pe.edu.utp.security.Csrf;
 
 /**
- * Datos del usuario logueado para la barra superior y cierre de sesion.
+ * Datos de la sesion para la plantilla: nombre en la barra superior y token
+ * CSRF que usan las llamadas AJAX (el cierre de sesion va por POST /api/auth/logout).
  */
 @Named
 @RequestScoped
 public class SesionBean {
 
     public UsuarioSesionDTO getUsuario() {
-        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-        return (UsuarioSesionDTO) ec.getSessionMap().get(UsuarioSesionDTO.ATRIBUTO);
+        return (UsuarioSesionDTO) sesion().get(UsuarioSesionDTO.ATRIBUTO);
     }
 
-    public String salir() {
-        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        return "/login?faces-redirect=true";
+    public String getCsrf() {
+        return (String) sesion().get(Csrf.ATRIBUTO);
+    }
+
+    private static Map<String, Object> sesion() {
+        return FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
     }
 }

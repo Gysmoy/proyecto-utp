@@ -10,6 +10,7 @@ Proyecto final del curso Desarrollo Web Integrado (UTP).
 
 - JDK 21 y Jakarta EE 10
 - Jakarta Faces 4.0 con PrimeFaces 15 y CDI
+- AJAX con `fetch` y JSON contra una API REST (Jakarta REST 3.1 + JSON-B)
 - MySQL 8 con JDBC (MySQL Connector/J)
 - Patrones MVC, DAO, DTO, Facade e Intercepting Filter
 - Seguridad: BCrypt, RSA-OAEP 2048, PBKDF2 y AES-256-GCM
@@ -20,17 +21,17 @@ Proyecto final del curso Desarrollo Web Integrado (UTP).
 ```
 database/gestor_accesos.sql      script de la base de datos
 src/main/java/pe/edu/utp/
-  controller/   managed beans (LoginBean, RegistroBean, SesionBean, AccesoBean)
+  controller/   managed beans que arman las vistas (LoginBean, SesionBean, TipoBean)
   facade/       reglas de negocio (AuthFacade, AccesoFacade)
   dao/          interfaces DAO y su implementación JDBC en dao/impl
   dto/          objetos de transferencia de datos
   filter/       filtros de codificación y sesión
-  security/     BCrypt, RSA y protección de la llave privada
-  api/          API REST en JSON (/api/accesos)
+  security/     BCrypt, RSA, protección de la llave privada y token CSRF
+  api/          API REST en JSON con Jakarta REST (auth, accesos, tipos)
 src/main/webapp/
   login.xhtml, registro.xhtml, accesos.xhtml   vistas Facelets con PrimeFaces
   WEB-INF/templates/                           plantillas
-  resources/                                   CSS y JavaScript
+  resources/js/                                AJAX: api.js, auth.js, accesos.js
 ```
 
 ## Cómo ejecutar
@@ -44,10 +45,18 @@ src/main/webapp/
 
 ## API REST
 
-Autenticación HTTP Basic con el usuario o correo y la contraseña del sistema.
+Las pantallas no envían formularios de Faces: login, registro, salir y el CRUD de accesos
+viajan por AJAX en JSON contra esta API.
+
+- Desde la web: sesión + cabecera `X-CSRF-Token` en POST, PUT y DELETE.
+- Desde otro sistema: HTTP Basic con el usuario o correo y la contraseña.
+- Errores: `{"status": 400, "error": "mensaje"}` con el código HTTP correspondiente.
 
 | Método | Ruta | Respuesta |
 |---|---|---|
+| POST | `/api/auth/login` | 200, 401 |
+| POST | `/api/auth/registro` | 201, 400 |
+| POST | `/api/auth/logout` | 204, 403 |
 | GET | `/api/accesos?q=&tipo=` | 200 |
 | GET | `/api/accesos/{id}` | 200, 404 |
 | GET | `/api/accesos/{id}/password` | 200, 404 |

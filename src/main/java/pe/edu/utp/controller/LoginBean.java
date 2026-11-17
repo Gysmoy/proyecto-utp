@@ -3,31 +3,18 @@ package pe.edu.utp.controller;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.util.Map;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import pe.edu.utp.dto.UsuarioSesionDTO;
-import pe.edu.utp.facade.AppException;
-import pe.edu.utp.facade.AuthFacade;
 import pe.edu.utp.security.LlavesSesion;
 
 /**
- * Controlador de login.xhtml.
+ * Controlador de login.xhtml. El formulario se envia por AJAX en JSON a
+ * POST /api/auth/login (auth.js); aqui solo se prepara la vista.
  */
 @Named
 @RequestScoped
 public class LoginBean {
-
-    private static final Logger LOG = Logger.getLogger(LoginBean.class.getName());
-
-    @Inject
-    private AuthFacade authFacade;
-
-    private String usuario;
-    private String password;
 
     /** f:viewAction al abrir la pagina: con sesion va directo a sus accesos. */
     public String alEntrar() {
@@ -36,48 +23,13 @@ public class LoginBean {
         if (sesion.get(UsuarioSesionDTO.ATRIBUTO) != null && sesion.get(LlavesSesion.ATRIBUTO) != null) {
             return "/accesos?faces-redirect=true";
         }
-        if (ec.getRequestParameterMap().containsKey("expirado")) {
+        Map<String, String> parametros = ec.getRequestParameterMap();
+        if (parametros.containsKey("expirado")) {
             Mensajes.error("Tu sesión expiró, vuelve a ingresar.");
         }
+        if (parametros.containsKey("registrado")) {
+            Mensajes.info("Cuenta creada. Ya puedes iniciar sesión.");
+        }
         return null;
-    }
-
-    public String ingresar() {
-        Optional<AuthFacade.Autenticado> resultado;
-        try {
-            resultado = authFacade.login(usuario, password);
-        } catch (AppException e) {
-            LOG.log(Level.SEVERE, "Error en login", e);
-            Mensajes.error("Ocurrió un error, intenta nuevamente.");
-            return null;
-        }
-        if (resultado.isEmpty()) {
-            Mensajes.error("Usuario o contraseña incorrectos.");
-            return null;
-        }
-
-        // Nueva sesion al loguearse para evitar session fixation
-        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-        ec.invalidateSession();
-        ec.getSession(true);
-        ec.getSessionMap().put(UsuarioSesionDTO.ATRIBUTO, resultado.get().usuario());
-        ec.getSessionMap().put(LlavesSesion.ATRIBUTO, resultado.get().llaves());
-        return "/accesos?faces-redirect=true";
-    }
-
-    public String getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

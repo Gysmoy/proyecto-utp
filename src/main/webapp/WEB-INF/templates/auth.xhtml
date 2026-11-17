@@ -6,7 +6,11 @@
     <ui:insert name="metadata"/>
     <h:head>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <!-- Raiz de la aplicacion para las llamadas AJAX a /api -->
+        <meta name="ctx" content="#{request.contextPath}"/>
         <title><ui:insert name="titulo"/> - Gestor de Accesos</title>
+        <h:outputScript name="js/api.js"/>
+        <h:outputScript name="js/auth.js"/>
         <f:facet name="last">
             <h:outputStylesheet name="css/app.css"/>
         </f:facet>

@@ -6,7 +6,11 @@
       xmlns:p="http://primefaces.org/ui">
     <h:head>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <!-- Raiz de la aplicacion y token CSRF de la sesion para las llamadas AJAX a /api -->
+        <meta name="ctx" content="#{request.contextPath}"/>
+        <meta name="csrf-token" content="#{sesionBean.csrf}"/>
         <title><ui:insert name="titulo"/> - Gestor de Accesos</title>
+        <h:outputScript name="js/api.js"/>
         <f:facet name="last">
             <h:outputStylesheet name="css/app.css"/>
         </f:facet>
@@ -16,9 +20,9 @@
             <h:link outcome="/accesos" styleClass="marca">
                 <i class="pi pi-shield"></i> Gestor de Accesos
             </h:link>
-            <h:form id="frmSesion" styleClass="barra-usuario">
+            <h:form id="frmSesion" styleClass="barra-usuario" onsubmit="return false;">
                 <span class="barra-nombre"><i class="pi pi-user"></i> #{sesionBean.usuario.nombre}</span>
-                <p:commandButton value="Salir" icon="pi pi-sign-out" action="#{sesionBean.salir}" ajax="false"
+                <p:commandButton id="btnSalir" type="button" value="Salir" icon="pi pi-sign-out" onclick="salir()"
                                  styleClass="ui-button-outlined boton-claro"/>
             </h:form>
         </header>
@@ -28,10 +32,5 @@
         </main>
 
         <p:growl id="avisos" widgetVar="avisos" globalOnly="true" life="3000"/>
-
-        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="380">
-            <p:commandButton value="Cancelar" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
-            <p:commandButton value="Eliminar" type="button" styleClass="ui-confirmdialog-yes ui-button-danger"/>
-        </p:confirmDialog>
     </h:body>
 </html>

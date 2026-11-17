@@ -46,7 +46,8 @@
     </welcome-file-list>
 
     <!-- Los filtros se ejecutan en el orden de sus filter-mapping.
-         La proteccion CSRF de las paginas la da el ViewState de Faces -->
+         CSRF: en las paginas lo cubre el ViewState de Faces y en las llamadas
+         AJAX a la API, la cabecera X-CSRF-Token (ver ApiAuthFilter) -->
     <filter>
         <filter-name>EncodingFilter</filter-name>
         <filter-class>pe.edu.utp.filter.EncodingFilter</filter-class>
@@ -55,7 +56,8 @@
         <filter-name>AuthFilter</filter-name>
         <filter-class>pe.edu.utp.filter.AuthFilter</filter-class>
     </filter>
-    <!-- API REST: HTTP Basic en cada peticion, sin sesion -->
+    <!-- API REST (JAX-RS en /api): sesion web + token CSRF, o HTTP Basic.
+         /api/auth (login, registro, logout) queda fuera porque es la puerta de entrada -->
     <filter>
         <filter-name>ApiAuthFilter</filter-name>
         <filter-class>pe.edu.utp.api.ApiAuthFilter</filter-class>
@@ -67,7 +69,10 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>ApiAuthFilter</filter-name>
-        <url-pattern>/api/*</url-pattern>
+        <url-pattern>/api/accesos</url-pattern>
+        <url-pattern>/api/accesos/*</url-pattern>
+        <url-pattern>/api/tipos</url-pattern>
+        <url-pattern>/api/tipos/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AuthFilter</filter-name>

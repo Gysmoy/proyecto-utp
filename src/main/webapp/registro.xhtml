@@ -13,39 +13,35 @@
             <p>Tu contraseña protege tu llave privada: no la olvides, no se puede recuperar.</p>
         </div>
 
-        <h:form id="frmRegistro">
+        <!-- Se envia por AJAX en JSON a POST /api/auth/registro (ver auth.js) -->
+        <h:form id="frmRegistro" onsubmit="return false;">
             <p:messages id="mensajes" closable="true"/>
 
             <div class="campo">
                 <p:outputLabel for="nombre" value="Nombre completo" indicateRequired="false"/>
-                <p:inputText id="nombre" value="#{registroBean.nombre}" required="true" maxlength="100"
-                             requiredMessage="Ingresa tu nombre." autocomplete="name"/>
+                <p:inputText id="nombre" required="true" maxlength="100" autocomplete="name"/>
             </div>
             <div class="campo">
                 <p:outputLabel for="usuario" value="Usuario" indicateRequired="false"/>
-                <p:inputText id="usuario" value="#{registroBean.usuario}" required="true" maxlength="50"
-                             requiredMessage="Ingresa un usuario." autocomplete="username"/>
+                <p:inputText id="usuario" required="true" maxlength="50" autocomplete="username"/>
             </div>
             <div class="campo">
                 <p:outputLabel for="email" value="Correo" indicateRequired="false"/>
-                <p:inputText id="email" type="email" value="#{registroBean.email}" required="true" maxlength="120"
-                             requiredMessage="Ingresa tu correo." autocomplete="email"/>
+                <p:inputText id="email" type="email" required="true" maxlength="120" autocomplete="email"/>
             </div>
             <div class="campo">
                 <p:outputLabel for="password" value="Contraseña" indicateRequired="false"/>
-                <p:password id="password" value="#{registroBean.password}" required="true"
-                            requiredMessage="Ingresa una contraseña." autocomplete="new-password"/>
+                <p:password id="password" required="true" autocomplete="new-password"/>
                 <small class="ayuda">Mínimo 8 caracteres.</small>
             </div>
             <div class="campo">
                 <p:outputLabel for="confirmar" value="Confirmar contraseña" indicateRequired="false"/>
-                <p:password id="confirmar" value="#{registroBean.confirmar}" required="true"
-                            requiredMessage="Confirma tu contraseña." autocomplete="new-password"/>
+                <p:password id="confirmar" required="true" autocomplete="new-password"/>
             </div>
 
-            <p:commandButton id="registrarme" value="Registrarme" icon="pi pi-check-circle"
-                             action="#{registroBean.registrar}" ajax="false"
-                             styleClass="boton-ancho ui-button-success"/>
+            <p:commandButton id="registrarme" type="button" value="Registrarme" icon="pi pi-check-circle"
+                             onclick="registrarme()" styleClass="boton-ancho ui-button-success"/>
+            <p:defaultCommand target="registrarme"/>
         </h:form>
 
         <p class="auth-pie">¿Ya tienes cuenta? <h:link outcome="/login" value="Inicia sesión"/></p>

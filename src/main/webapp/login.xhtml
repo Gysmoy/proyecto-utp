@@ -20,23 +20,23 @@
             <p>Gestor de contraseñas y accesos</p>
         </div>
 
-        <h:form id="frmLogin">
+        <!-- Se envia por AJAX en JSON a POST /api/auth/login (ver auth.js) -->
+        <h:form id="frmLogin" onsubmit="return false;">
             <p:focus context="frmLogin"/>
             <p:messages id="mensajes" closable="true"/>
 
             <div class="campo">
                 <p:outputLabel for="usuario" value="Usuario o correo" indicateRequired="false"/>
-                <p:inputText id="usuario" value="#{loginBean.usuario}" required="true"
-                             requiredMessage="Ingresa tu usuario o correo." autocomplete="username"/>
+                <p:inputText id="usuario" required="true" autocomplete="username"/>
             </div>
             <div class="campo">
                 <p:outputLabel for="password" value="Contraseña" indicateRequired="false"/>
-                <p:password id="password" value="#{loginBean.password}" required="true"
-                            requiredMessage="Ingresa tu contraseña." autocomplete="current-password"/>
+                <p:password id="password" required="true" autocomplete="current-password"/>
             </div>
 
-            <p:commandButton id="ingresar" value="Ingresar" icon="pi pi-sign-in" action="#{loginBean.ingresar}"
-                             ajax="false" styleClass="boton-ancho"/>
+            <p:commandButton id="ingresar" type="button" value="Ingresar" icon="pi pi-sign-in"
+                             onclick="ingresar()" styleClass="boton-ancho"/>
+            <p:defaultCommand target="ingresar"/>
         </h:form>
 
         <p class="auth-pie">¿No tienes cuenta? <h:link outcome="/registro" value="Regístrate"/></p>
